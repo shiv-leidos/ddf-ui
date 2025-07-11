@@ -19,7 +19,7 @@ import user from '../../singletons/user-instance'
 import Button from '@mui/material/Button'
 import LinkIcon from '@mui/icons-material/Link'
 import GetAppIcon from '@mui/icons-material/GetApp'
-import Grid from '@mui/material/Grid'
+//import Grid from '@mui/material/Grid'
 
 import Paper from '@mui/material/Paper'
 import Tooltip from '@mui/material/Tooltip'
@@ -57,6 +57,7 @@ import {
   RESULTS_ATTRIBUTES_LIST,
   getDefaultResultsShownList,
 } from '../settings-helpers'
+import { Grid2 } from '@mui/material'
 
 const PropertyComponent = (props: React.AllHTMLAttributes<HTMLDivElement>) => {
   return (
@@ -188,7 +189,49 @@ const MultiSelectActions = ({
  * Used to ensure consistent full-height styling across dynamic action elements.
  */
 const dynamicActionClasses = 'h-full'
-//const visibleMoreButtonClasses = 'opacity-100 visible flex items-center justify-center z-50'
+
+const HorizontalFixedActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
+  //const { setProps } = useDialog()
+  // const metacardInteractionMenuState = useMenuState()
+  //const DownloadComponent = useDownloadComponent()
+  return (
+    <Grid2 container direction="row" wrap="nowrap" data-id="row-actions-container">
+        <Grid2 className={dynamicActionClasses}>
+          <Button
+            component="div"
+            title={lazyResult.plain.metacard.properties['ext.link']}
+            style={{ height: '100%' }}
+            size="small"
+            disabled={lazyResult.plain.metacard.properties['ext.link'] ? false : true}
+          >
+            <LinkIcon />
+          </Button>
+        </Grid2>
+        <Grid2 className={dynamicActionClasses}>
+          <Button
+            component="div"
+            data-id="download-button"
+            style={{ height: '100%' }}
+            size="small"
+            disabled={lazyResult.getDownloadUrl() ? false : true}
+          >
+            <GetAppIcon />
+          </Button>
+        </Grid2>
+        <Grid2 className="h-full">
+          <Button
+            component="div"
+            data-id="result-item-more-vert-button"
+            style={{ height: '100%' }}
+            size="small"
+          >
+            <MoreIcon />
+          </Button>
+        </Grid2>
+      </Grid2>
+  )
+}
+
 /**
  * A component that displays a set of dynamic action buttons for a given result (lazyResult).
  * Includes options for more actions, download, validation errors/warnings, external links, and editing search results.
@@ -201,51 +244,13 @@ const dynamicActionClasses = 'h-full'
  * Props:
  * - `lazyResult` (LazyQueryResult): The result object for which actions are displayed.
  */
-const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
+const VerticalDynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
   const { setProps } = useDialog()
   const metacardInteractionMenuState = useMenuState()
   const DownloadComponent = useDownloadComponent()
   return (
-    <Grid container wrap="nowrap" alignItems="flex-start"> 
-      <Grid container direction="row" wrap="nowrap" data-id="row-actions-container">
-        <Grid item className={dynamicActionClasses}>
-        {lazyResult.plain.metacard.properties['ext.link'] ? (
-          <Button
-            component="div"
-            title={lazyResult.plain.metacard.properties['ext.link']}
-            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-              e.stopPropagation()
-              window.open(lazyResult.plain.metacard.properties['ext.link'])
-            }}
-            style={{ height: '100%' }}
-            size="small"
-          >
-            <LinkIcon />
-          </Button>
-        ) : null}
-        </Grid>
-        <Grid item className={dynamicActionClasses}>
-        {lazyResult.getDownloadUrl() ? (
-          <Button
-            component="div"
-            data-id="download-button"
-            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-              e.stopPropagation()
-              setProps({
-                open: true,
-                children: <DownloadComponent lazyResults={[lazyResult]} />,
-              })
-            }}
-            style={{ height: '100%' }}
-            size="small"
-          >
-            <GetAppIcon />
-          </Button>
-        ) : null}
-        </Grid>
-      </Grid>
-    <Grid container direction="column" wrap="nowrap" alignItems="center" data-id="column-actions-container">
-      <Grid item className="h-full">
+    <Grid2 container direction="column" wrap="nowrap" alignItems="center" data-id="column-actions-container">
+      <Grid2 className="h-full">
         <Button
           component="div"
           data-id="result-item-more-vert-button"
@@ -270,8 +275,8 @@ const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
             />
           </Paper>
         </Popover>
-      </Grid>
-      <Grid item className={dynamicActionClasses}>
+      </Grid2>
+      <Grid2 className={dynamicActionClasses}>
         {lazyResult.hasErrors() ? (
           <div
             data-id="validation-errors-icon"
@@ -285,8 +290,8 @@ const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
         ) : (
           ''
         )}
-      </Grid>
-      <Grid item className={dynamicActionClasses}>
+      </Grid2>
+      <Grid2 className={dynamicActionClasses}>
         {!lazyResult.hasErrors() && lazyResult.hasWarnings() ? (
           <div
             data-id="validation-warnings-icon"
@@ -300,8 +305,8 @@ const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
         ) : (
           ''
         )}
-      </Grid>
-      <Grid item className={dynamicActionClasses}>
+      </Grid2>
+      <Grid2 className={dynamicActionClasses}>
         {lazyResult.plain.metacard.properties['ext.link'] ? (
           <Button
             component="div"
@@ -316,8 +321,8 @@ const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
             <LinkIcon />
           </Button>
         ) : null}
-      </Grid>
-      <Grid item className={dynamicActionClasses}>
+      </Grid2>
+      <Grid2 className={dynamicActionClasses}>
         {lazyResult.getDownloadUrl() ? (
           <Button
             component="div"
@@ -335,9 +340,9 @@ const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
             <GetAppIcon />
           </Button>
         ) : null}
-      </Grid>
+      </Grid2>
       <Extensions.resultItemTitleAddOn lazyResult={lazyResult} />
-      <Grid item className={dynamicActionClasses}>
+      <Grid2 className={dynamicActionClasses}>
         {lazyResult.isSearch() ? (
           <Button
             component={Link}
@@ -349,7 +354,7 @@ const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
             <EditIcon />
           </Button>
         ) : null}
-      </Grid>
+      </Grid2>
       {/** add inline editing later */}
       {/* <Grid item className="h-full">
            {lazyResult.isSearch() ? (
@@ -365,8 +370,7 @@ const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
              </Button>
            ) : null}
          </Grid> */}
-    </Grid>
-    </Grid>
+    </Grid2>
   )
 }
 export const SelectionBackground = ({
@@ -497,7 +501,7 @@ export const ResultItem = ({
       : value
   }
   const convertToFormat = useCoordinateFormat()
-  const [renderExtras, setRenderExtras] = React.useState(true) // dynamic actions are a significant part of rendering time, so delay until necessary
+  const [renderExtras, setRenderExtras] = React.useState(false) // dynamic actions are a significant part of rendering time, so delay until necessary
   const [decimalPrecision, setDecimalPrecision] = React.useState(
     TypedUserInstance.getDecimalPrecision()
   )
@@ -856,37 +860,18 @@ export const ResultItem = ({
             </div>
           </div>
         </div>
-        {renderExtras ? (
+      {renderExtras ? 
+        null :
+        (
           <>
             {' '}
             {/* trick to keep the dropdown visible over an arc of the cursor, so users have some leeway if going diagonal to the actions dropdowns **/}
-            <div
-              className={`${diagonalHoverClasses} w-full transform translate-y-1`}
-            />
-            <div
-              className={`${diagonalHoverClasses} w-9/12 transform translate-y-2 `}
-            />
-            <div
-              className={`${diagonalHoverClasses} w-6/12 transform translate-y-3`}
-            />
-            <div
-              className={`${diagonalHoverClasses} w-5/12 transform translate-y-4`}
-            />
-            <div
-              className={`${diagonalHoverClasses} w-4/12 transform translate-y-5`}
-            />
-            <div
-              className={`${diagonalHoverClasses} w-3/12 transform translate-y-6`}
-            />
-            <div
-              className={`${diagonalHoverClasses} w-2/12 transform translate-y-8`}
-            />
             <div
               className={`absolute z-40 group-hover:z-50 focus-within:z-50 right-0 top-0 
                 focus-within:opacity-100 
                 group-hover:opacity-100 
                 hover:opacity-100 
-                opacity-10 
+                opacity-100 
                 cursor-auto transform focus-within:scale-100 transition-all 
                 hover:scale-100 ease-in-out duration-200 hover:translate-x-0 hover:scale-x-100`}
             >
@@ -897,10 +882,57 @@ export const ResultItem = ({
                 elevation={Elevations.overlays}
                 className="p-2"
               >
-                <DynamicActions lazyResult={lazyResult} />
+                <HorizontalFixedActions lazyResult={lazyResult} />
               </Paper>
             </div>
           </>
+        ) 
+      }
+      {renderExtras ? (
+        <>
+          {' '}
+          {/* trick to keep the dropdown visible over an arc of the cursor, so users have some leeway if going diagonal to the actions dropdowns **/}
+          <div
+            className={`${diagonalHoverClasses} w-full transform translate-y-1`}
+          />
+          <div
+            className={`${diagonalHoverClasses} w-9/12 transform translate-y-2 `}
+          />
+          <div
+            className={`${diagonalHoverClasses} w-6/12 transform translate-y-3`}
+          />
+          <div
+            className={`${diagonalHoverClasses} w-5/12 transform translate-y-4`}
+          />
+          <div
+            className={`${diagonalHoverClasses} w-4/12 transform translate-y-5`}
+          />
+          <div
+            className={`${diagonalHoverClasses} w-3/12 transform translate-y-6`}
+          />
+          <div
+            className={`${diagonalHoverClasses} w-2/12 transform translate-y-8`}
+          />
+          <div
+            className={`absolute z-40 group-hover:z-50 focus-within:z-50 right-0 top-0 
+              focus-within:opacity-100 
+              group-hover:opacity-100 
+              hover:opacity-100 
+              opacity-0 
+              cursor-auto transform focus-within:scale-100 transition-all 
+              hover:scale-100 ease-in-out duration-200 hover:translate-x-0 hover:scale-x-100`}
+          >
+            <Paper
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
+              elevation={Elevations.overlays}
+              className="p-2"
+            >
+              <VerticalDynamicActions lazyResult={lazyResult} />
+            </Paper>
+          </div>
+        </>
         ) : null}
       </div>
     </button>
