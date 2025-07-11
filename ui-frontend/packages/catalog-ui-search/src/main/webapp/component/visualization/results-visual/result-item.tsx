@@ -72,6 +72,13 @@ const PropertyComponent = (props: React.AllHTMLAttributes<HTMLDivElement>) => {
     />
   )
 }
+/**
+ * Defines the basic properties for a ResultItem component.
+ * 
+ * @property lazyResults - An array of LazyQueryResult objects representing multiple query results.
+ * @property lazyResult - A single LazyQueryResult object representing an individual result.
+ * @property selectionInterface - An object providing selection functionality for results.
+ */
 type ResultItemBasicProps = {
   lazyResults: LazyQueryResult[]
   lazyResult: LazyQueryResult
@@ -91,6 +98,13 @@ const showSource = () => {
     ) !== undefined
   )
 }
+/**
+ * Determines if the relevance score should be displayed for a specific result.
+ *
+ * @param {Object} options - The options for the function.
+ * @param {ResultItemBasicProps['lazyResult']} options.lazyResult - A single lazy result object used to check if it has relevance.
+ * @returns {boolean} True if relevance scores are configured to be shown and the result has a relevance score; otherwise, false.
+ */
 const showRelevanceScore = ({
   lazyResult,
 }: {
@@ -115,6 +129,20 @@ export const getIconClassName = ({
   }
   return IconHelper.getClassByMetacardObject(lazyResult.plain)
 }
+
+/**
+ * A React component that provides multi-select actions for managing a collection of selected results.
+ *
+ * @param {Object} props - The component properties.
+ * @param {any} props.selectionInterface - An interface for managing the selection of results.
+ *
+ * The component displays the number of selected results and provides access
+ * to actions for the selected items via a contextual menu.
+ * 
+ * - Disables actions if no results are selected.
+ * - Allows interaction with selected results through a popover menu.
+ * - Uses `LazyMetacardInteractions` to display actions for the selected results.
+ */
 // @ts-ignore
 const MultiSelectActions = ({
   selectionInterface,
@@ -155,13 +183,68 @@ const MultiSelectActions = ({
     </>
   )
 }
+/**
+ * A CSS class string for setting the height of a component to fill its container.
+ * Used to ensure consistent full-height styling across dynamic action elements.
+ */
 const dynamicActionClasses = 'h-full'
+//const visibleMoreButtonClasses = 'opacity-100 visible flex items-center justify-center z-50'
+/**
+ * A component that displays a set of dynamic action buttons for a given result (lazyResult).
+ * Includes options for more actions, download, validation errors/warnings, external links, and editing search results.
+ * 
+ * - Utilizes a popover menu for extended interactions through `LazyMetacardInteractions`.
+ * - Displays visual indicators for validation errors or warnings.
+ * - Provides buttons for result-specific actions such as opening external links, downloading resources,
+ *   and editing search-based results.
+ * 
+ * Props:
+ * - `lazyResult` (LazyQueryResult): The result object for which actions are displayed.
+ */
 const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
   const { setProps } = useDialog()
   const metacardInteractionMenuState = useMenuState()
   const DownloadComponent = useDownloadComponent()
   return (
-    <Grid container direction="column" wrap="nowrap" alignItems="center">
+    <Grid container wrap="nowrap" alignItems="flex-start"> 
+      <Grid container direction="row" wrap="nowrap" data-id="row-actions-container">
+        <Grid item className={dynamicActionClasses}>
+        {lazyResult.plain.metacard.properties['ext.link'] ? (
+          <Button
+            component="div"
+            title={lazyResult.plain.metacard.properties['ext.link']}
+            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              e.stopPropagation()
+              window.open(lazyResult.plain.metacard.properties['ext.link'])
+            }}
+            style={{ height: '100%' }}
+            size="small"
+          >
+            <LinkIcon />
+          </Button>
+        ) : null}
+        </Grid>
+        <Grid item className={dynamicActionClasses}>
+        {lazyResult.getDownloadUrl() ? (
+          <Button
+            component="div"
+            data-id="download-button"
+            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              e.stopPropagation()
+              setProps({
+                open: true,
+                children: <DownloadComponent lazyResults={[lazyResult]} />,
+              })
+            }}
+            style={{ height: '100%' }}
+            size="small"
+          >
+            <GetAppIcon />
+          </Button>
+        ) : null}
+        </Grid>
+      </Grid>
+    <Grid container direction="column" wrap="nowrap" alignItems="center" data-id="column-actions-container">
       <Grid item className="h-full">
         <Button
           component="div"
@@ -282,6 +365,7 @@ const DynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
              </Button>
            ) : null}
          </Grid> */}
+    </Grid>
     </Grid>
   )
 }
@@ -413,7 +497,7 @@ export const ResultItem = ({
       : value
   }
   const convertToFormat = useCoordinateFormat()
-  const [renderExtras, setRenderExtras] = React.useState(false) // dynamic actions are a significant part of rendering time, so delay until necessary
+  const [renderExtras, setRenderExtras] = React.useState(true) // dynamic actions are a significant part of rendering time, so delay until necessary
   const [decimalPrecision, setDecimalPrecision] = React.useState(
     TypedUserInstance.getDecimalPrecision()
   )
@@ -798,7 +882,13 @@ export const ResultItem = ({
               className={`${diagonalHoverClasses} w-2/12 transform translate-y-8`}
             />
             <div
-              className={`absolute z-40 group-hover:z-50 focus-within:z-50 right-0 top-0 focus-within:opacity-100 group-hover:opacity-100 hover:opacity-100 opacity-0 cursor-auto transform focus-within:scale-100 transition-all hover:scale-100 ease-in-out duration-200 hover:translate-x-0 hover:scale-x-100`}
+              className={`absolute z-40 group-hover:z-50 focus-within:z-50 right-0 top-0 
+                focus-within:opacity-100 
+                group-hover:opacity-100 
+                hover:opacity-100 
+                opacity-10 
+                cursor-auto transform focus-within:scale-100 transition-all 
+                hover:scale-100 ease-in-out duration-200 hover:translate-x-0 hover:scale-x-100`}
             >
               <Paper
                 onClick={(e) => {
