@@ -19,7 +19,6 @@ import user from '../../singletons/user-instance'
 import Button from '@mui/material/Button'
 import LinkIcon from '@mui/icons-material/Link'
 import GetAppIcon from '@mui/icons-material/GetApp'
-//import Grid from '@mui/material/Grid'
 
 import Paper from '@mui/material/Paper'
 import Tooltip from '@mui/material/Tooltip'
@@ -99,13 +98,6 @@ const showSource = () => {
     ) !== undefined
   )
 }
-/**
- * Determines if the relevance score should be displayed for a specific result.
- *
- * @param {Object} options - The options for the function.
- * @param {ResultItemBasicProps['lazyResult']} options.lazyResult - A single lazy result object used to check if it has relevance.
- * @returns {boolean} True if relevance scores are configured to be shown and the result has a relevance score; otherwise, false.
- */
 const showRelevanceScore = ({
   lazyResult,
 }: {
@@ -191,9 +183,6 @@ const MultiSelectActions = ({
 const dynamicActionClasses = 'h-full'
 
 const HorizontalFixedActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
-  //const { setProps } = useDialog()
-  // const metacardInteractionMenuState = useMenuState()
-  //const DownloadComponent = useDownloadComponent()
   return (
     <Grid2 container direction="row" wrap="nowrap" data-id="row-actions-container">
         <Grid2 className={dynamicActionClasses}>
@@ -864,7 +853,6 @@ export const ResultItem = ({
         (
           <>
             {' '}
-            {/* trick to keep the dropdown visible over an arc of the cursor, so users have some leeway if going diagonal to the actions dropdowns **/}
             <div
               className={`absolute z-40 
                 group-hover:z-50 
