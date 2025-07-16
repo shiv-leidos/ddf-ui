@@ -307,39 +307,37 @@ const VerticalDynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult })
         )}
       </Grid2>
       <Grid2 className={dynamicActionClasses}>
-        {lazyResult.plain.metacard.properties['ext.link'] ? (
-          <Button
-            component="div"
-            title={lazyResult.plain.metacard.properties['ext.link']}
-            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-              e.stopPropagation()
-              window.open(lazyResult.plain.metacard.properties['ext.link'])
-            }}
-            style={{ height: '100%' }}
-            size="small"
-          >
-            <LinkIcon />
-          </Button>
-        ) : null}
+        <Button
+          component="div"
+          title={lazyResult.plain.metacard.properties['ext.link']}
+          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            e.stopPropagation()
+            window.open(lazyResult.plain.metacard.properties['ext.link'])
+          }}
+          style={{ height: '100%' }}
+          size="small"
+          disabled={lazyResult.plain.metacard.properties['ext.link'] ? false : true}
+        >
+          <LinkIcon />
+        </Button>
       </Grid2>
       <Grid2 className={dynamicActionClasses}>
-        {lazyResult.getDownloadUrl() ? (
-          <Button
-            component="div"
-            data-id="download-button"
-            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-              e.stopPropagation()
-              setProps({
-                open: true,
-                children: <DownloadComponent lazyResults={[lazyResult]} />,
-              })
-            }}
-            style={{ height: '100%' }}
-            size="small"
-          >
-            <GetAppIcon />
-          </Button>
-        ) : null}
+        <Button
+          component="div"
+          data-id="download-button"
+          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            e.stopPropagation()
+            setProps({
+              open: true,
+              children: <DownloadComponent lazyResults={[lazyResult]} />,
+            })
+          }}
+          style={{ height: '100%' }}
+          size="small"
+          disabled={lazyResult.getDownloadUrl() ? false : true}
+        >
+          <GetAppIcon />
+        </Button>
       </Grid2>
       <Extensions.resultItemTitleAddOn lazyResult={lazyResult} />
       <Grid2 className={dynamicActionClasses}>
@@ -666,6 +664,7 @@ export const ResultItem = ({
          * thus making the dynamic actions stay visible when the user starts to mouse away.
          */
         try {
+          setRenderExtras(false)
           if (
             document.activeElement &&
             buttonRef.current &&
@@ -867,13 +866,23 @@ export const ResultItem = ({
             {' '}
             {/* trick to keep the dropdown visible over an arc of the cursor, so users have some leeway if going diagonal to the actions dropdowns **/}
             <div
-              className={`absolute z-40 group-hover:z-50 focus-within:z-50 right-0 top-0 
+              className={`absolute z-40 
+                group-hover:z-50 
+                focus-within:z-50 
+                right-0 
+                top-0 
                 focus-within:opacity-100 
                 group-hover:opacity-100 
                 hover:opacity-100 
                 opacity-100 
-                cursor-auto transform focus-within:scale-100 transition-all 
-                hover:scale-100 ease-in-out duration-200 hover:translate-x-0 hover:scale-x-100`}
+                cursor-auto transform 
+                focus-within:scale-100 
+                transition-all 
+                hover:scale-100 
+                ease-in-out 
+                duration-200 
+                hover:translate-x-0 
+                hover:scale-x-100`}
             >
               <Paper
                 onClick={(e) => {
@@ -914,13 +923,23 @@ export const ResultItem = ({
             className={`${diagonalHoverClasses} w-2/12 transform translate-y-8`}
           />
           <div
-            className={`absolute z-40 group-hover:z-50 focus-within:z-50 right-0 top-0 
+            className={`absolute z-40 
+              group-hover:z-50 
+              focus-within:z-50 
+              right-0 
+              top-0 
               focus-within:opacity-100 
               group-hover:opacity-100 
               hover:opacity-100 
               opacity-0 
-              cursor-auto transform focus-within:scale-100 transition-all 
-              hover:scale-100 ease-in-out duration-200 hover:translate-x-0 hover:scale-x-100`}
+              cursor-auto transform 
+              focus-within:scale-100 
+              transition-all 
+              hover:scale-100 
+              ease-in-out 
+              duration-200 
+              hover:translate-x-0 
+              hover:scale-x-100`}
           >
             <Paper
               onClick={(e) => {
