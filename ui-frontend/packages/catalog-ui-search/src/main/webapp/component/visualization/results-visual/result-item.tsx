@@ -17,8 +17,6 @@ import LazyMetacardInteractions from './lazy-metacard-interactions'
 import IconHelper from '../../../js/IconHelper'
 import user from '../../singletons/user-instance'
 import Button from '@mui/material/Button'
-import LinkIcon from '@mui/icons-material/Link'
-import GetAppIcon from '@mui/icons-material/GetApp'
 
 import Paper from '@mui/material/Paper'
 import Tooltip from '@mui/material/Tooltip'
@@ -49,14 +47,14 @@ import ExtensionPoints from '../../../extension-points/extension-points'
 import { StartupDataStore } from '../../../js/model/Startup/startup'
 import { useMetacardDefinitions } from '../../../js/model/Startup/metacard-definitions.hooks'
 import wreqr from '../../../js/wreqr'
-import { useDialog } from '../../dialog'
-import { useDownloadComponent } from '../../download/download'
 import { LayoutContext } from '../../golden-layout/visual-settings.provider'
 import {
   RESULTS_ATTRIBUTES_LIST,
   getDefaultResultsShownList,
 } from '../settings-helpers'
 import { Grid2 } from '@mui/material'
+import { LinkButton } from '../../button/link-button'
+import { DownloadButton } from '../../button/download-button'
 
 const PropertyComponent = (props: React.AllHTMLAttributes<HTMLDivElement>) => {
   return (
@@ -185,28 +183,8 @@ const dynamicActionClasses = 'h-full'
 const HorizontalFixedActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
   return (
     <Grid2 container direction="row" wrap="nowrap" data-id="row-actions-container">
-        <Grid2 className={dynamicActionClasses}>
-          <Button
-            component="div"
-            title={lazyResult.plain.metacard.properties['ext.link']}
-            style={{ height: '100%' }}
-            size="small"
-            disabled={lazyResult.plain.metacard.properties['ext.link'] ? false : true}
-          >
-            <LinkIcon />
-          </Button>
-        </Grid2>
-        <Grid2 className={dynamicActionClasses}>
-          <Button
-            component="div"
-            data-id="download-button"
-            style={{ height: '100%' }}
-            size="small"
-            disabled={lazyResult.getDownloadUrl() ? false : true}
-          >
-            <GetAppIcon />
-          </Button>
-        </Grid2>
+        <LinkButton lazyResult={lazyResult} />
+        <DownloadButton lazyResult={lazyResult} />
         <Grid2 className="h-full">
           <Button
             component="div"
@@ -234,9 +212,7 @@ const HorizontalFixedActions = ({ lazyResult }: { lazyResult: LazyQueryResult })
  * - `lazyResult` (LazyQueryResult): The result object for which actions are displayed.
  */
 const VerticalDynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult }) => {
-  const { setProps } = useDialog()
   const metacardInteractionMenuState = useMenuState()
-  const DownloadComponent = useDownloadComponent()
   return (
     <Grid2 container direction="column" wrap="nowrap" alignItems="center" data-id="column-actions-container">
       <Grid2 className="h-full">
@@ -295,39 +271,8 @@ const VerticalDynamicActions = ({ lazyResult }: { lazyResult: LazyQueryResult })
           ''
         )}
       </Grid2>
-      <Grid2 className={dynamicActionClasses}>
-        <Button
-          component="div"
-          title={lazyResult.plain.metacard.properties['ext.link']}
-          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            e.stopPropagation()
-            window.open(lazyResult.plain.metacard.properties['ext.link'])
-          }}
-          style={{ height: '100%' }}
-          size="small"
-          disabled={lazyResult.plain.metacard.properties['ext.link'] ? false : true}
-        >
-          <LinkIcon />
-        </Button>
-      </Grid2>
-      <Grid2 className={dynamicActionClasses}>
-        <Button
-          component="div"
-          data-id="download-button"
-          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            e.stopPropagation()
-            setProps({
-              open: true,
-              children: <DownloadComponent lazyResults={[lazyResult]} />,
-            })
-          }}
-          style={{ height: '100%' }}
-          size="small"
-          disabled={lazyResult.getDownloadUrl() ? false : true}
-        >
-          <GetAppIcon />
-        </Button>
-      </Grid2>
+      <LinkButton lazyResult={lazyResult} />
+      <DownloadButton lazyResult={lazyResult} />
       <Extensions.resultItemTitleAddOn lazyResult={lazyResult} />
       <Grid2 className={dynamicActionClasses}>
         {lazyResult.isSearch() ? (
